@@ -1,13 +1,17 @@
 package com.javagrunt.service.youtube;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
-@SpringBootTest
-class ApplicationTests {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class ApplicationTests extends AbstractAppTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @LocalServerPort
+    private int port;
 
+    @Override
+    int getPort() {
+        return this.port;
+    }
+    
 }
