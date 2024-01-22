@@ -15,6 +15,5 @@ public class YouTubeVideo {
     private String description;
     private String title;
     private String thumbnail;
-    private String dateString;
-    private ZonedDateTime date;
+    private String date;
 }

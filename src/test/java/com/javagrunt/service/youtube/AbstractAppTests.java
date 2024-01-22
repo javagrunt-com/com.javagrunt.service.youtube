@@ -64,7 +64,7 @@ public abstract class AbstractAppTests {
 
     @Test
     public void shouldReturnRepositoryIndex() throws Exception {
-        given(this.spec)
+        Response body = given(this.spec)
                 .filter(document("index",
                         links(halLinks(),
                                 linkWithRel("youTubeVideos").description("YouTube videos"),
@@ -73,7 +73,25 @@ public abstract class AbstractAppTests {
                 .port(getPort())
                 .get("/")
                 .then()
-                .assertThat().statusCode(is(200));
+                .assertThat().statusCode(is(200))
+                .extract().response();
+        logger.info("Body: " + body.getBody().asString());
+    }
+
+    @Test
+    public void shouldReturnListOfVideos() throws Exception {
+        Response body = given(this.spec)
+                .filter(document("index",
+                        links(halLinks(),
+                                linkWithRel("self").description("This resource"),
+                                linkWithRel("profile").description("The ALPS profile for the service"))))
+                .when()
+                .port(getPort())
+                .get("/youTubeVideos")
+                .then()
+                .assertThat().statusCode(is(200))
+                .extract().response();
+        logger.info("Body: " + body.getBody().asString());
     }
 
     @Test
