@@ -77,6 +77,30 @@ public abstract class AbstractAppTests {
     }
 
     @Test
+    public void shouldReturnIterableListYouTubeVideos() throws Exception {
+        Response r = given(this.spec)
+                .contentType("application/json")
+                .body(youTubeVideoJson())
+                .when()
+                .port(getPort())
+                .post("/youTubeVideos")
+                .then()
+                .assertThat().statusCode(is(201))
+                .extract().response();
+        
+        Response list = given(this.spec)
+                .filter(document("index"))
+                .when()
+                .port(getPort())
+                .get("/api/youTubeVideos")
+                .then()
+                .assertThat().statusCode(is(200))
+                .extract().response();
+        
+        logger.info("Body: " + list.getBody().asString());
+    }
+
+    @Test
     public void shouldCreateEntity() throws Exception {
         given(this.spec)
                 .filter(document("create"))

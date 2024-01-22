@@ -1,8 +1,10 @@
 package com.javagrunt.service.youtube;
 
 import jakarta.persistence.Entity;
-import lombok.Data;
 import jakarta.persistence.Id;
+import lombok.Data;
+
+import java.time.ZonedDateTime;
 
 
 @Data
@@ -13,5 +15,6 @@ public class YouTubeVideo {
     private String description;
     private String title;
     private String thumbnail;
-    private String date;
+    private String dateString;
+    private ZonedDateTime date;
 }
