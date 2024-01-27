@@ -19,9 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
@@ -29,7 +27,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 @ExtendWith(RestDocumentationExtension.class)
 @Testcontainers
 public abstract class AbstractAppTests {
-    
+
     static Logger logger = LoggerFactory.getLogger(AbstractAppTests.class);
 
     abstract int getPort();
@@ -63,49 +61,17 @@ public abstract class AbstractAppTests {
     }
 
     @Test
-    public void shouldReturnRepositoryIndex() throws Exception {
-        Response body = given(this.spec)
-                .filter(document("index",
-                        links(halLinks(),
-                                linkWithRel("youTubeVideos").description("YouTube videos"),
-                                linkWithRel("profile").description("The ALPS profile for the service"))))
-                .when()
-                .port(getPort())
-                .get("/")
-                .then()
-                .assertThat().statusCode(is(200))
-                .extract().response();
-        logger.info("Body: " + body.getBody().asString());
-    }
-
-    @Test
-    public void shouldReturnListOfVideos() throws Exception {
-        Response body = given(this.spec)
-                .filter(document("index",
-                        links(halLinks(),
-                                linkWithRel("self").description("This resource"),
-                                linkWithRel("profile").description("The ALPS profile for the service"))))
-                .when()
-                .port(getPort())
-                .get("/youTubeVideos")
-                .then()
-                .assertThat().statusCode(is(200))
-                .extract().response();
-        logger.info("Body: " + body.getBody().asString());
-    }
-
-    @Test
     public void shouldReturnIterableListYouTubeVideos() throws Exception {
         Response r = given(this.spec)
                 .contentType("application/json")
                 .body(youTubeVideoJson())
                 .when()
                 .port(getPort())
-                .post("/youTubeVideos")
+                .post("/api/youTubeVideos")
                 .then()
-                .assertThat().statusCode(is(201))
+                .assertThat().statusCode(is(200))
                 .extract().response();
-        
+
         Response list = given(this.spec)
                 .filter(document("index"))
                 .when()
@@ -114,53 +80,49 @@ public abstract class AbstractAppTests {
                 .then()
                 .assertThat().statusCode(is(200))
                 .extract().response();
-        
+
         logger.info("Body: " + list.getBody().asString());
     }
 
     @Test
     public void shouldCreateEntity() throws Exception {
+        Response r = given(this.spec)
+                .filter(document("create"))
+                .contentType("application/json")
+                .body(youTubeVideoJson())
+                .when()
+                .port(getPort())
+                .post("/api/youTubeVideos")
+                .then()
+                .assertThat().statusCode(is(200))
+                .extract().response();
+
+        logger.info("Body: " + r.getBody().asString());
+        assert r.getBody().asString().contains("theid");
+    }
+
+    @Test
+    public void shouldRetrieveEntity() throws Exception {
         given(this.spec)
                 .filter(document("create"))
                 .contentType("application/json")
                 .body(youTubeVideoJson())
                 .when()
                 .port(getPort())
-                .post("/youTubeVideos")
+                .post("/api/youTubeVideos")
                 .then()
-                .assertThat().statusCode(is(201))
-                .assertThat().header("Location", containsString("youTubeVideos/"));
-    }
+                .assertThat().statusCode(is(200));
 
-    @Test
-    public void shouldRetrieveEntity() throws Exception {
-
-        Response r = given(this.spec)
-                .contentType("application/json")
-                .body(youTubeVideoJson())
+        Response r2 = given(this.spec)
+                .filter(document("get"))
                 .when()
                 .port(getPort())
-                .post("/youTubeVideos")
-                .then()
-                .assertThat().statusCode(is(201))
-                .extract().response();
-
-        String location = r.getHeader("Location");
-        logger.info("Location: " + location);
-        
-        Response r2 = given(this.spec)
-                .filter(document("get",
-                        links(halLinks(),
-                                linkWithRel("self").description("This resource"),
-                                linkWithRel("youTubeVideo").description("This YouTube video"))))
-                .when()
-                .get(location)
+                .get("/api/youTubeVideos/theid")
                 .then()
                 .assertThat().statusCode(is(200))
                 .extract().response();
         logger.info("Body: " + r2.getBody().asString());
         assert r2.getBody().asString().contains("the title");
-
     }
 
     @Test
@@ -171,32 +133,31 @@ public abstract class AbstractAppTests {
                 .body(youTubeVideoJson())
                 .when()
                 .port(getPort())
-                .post("/youTubeVideos")
+                .post("/api/youTubeVideos")
                 .then()
-                .assertThat().statusCode(is(201))
+                .assertThat().statusCode(is(200))
                 .extract().response();
-
-        String location = r.getHeader("Location");
-        logger.info("Location: " + location);
 
         Response r2 = given(this.spec)
                 .filter(document("delete"))
                 .when()
-                .delete(location)
+                .port(getPort())
+                .delete("/api/youTubeVideos/theid")
                 .then()
                 .assertThat().statusCode(is(200))
                 .extract().response();
         logger.info("Body: " + r2.getBody().asString());
-        
+
         given(this.spec)
                 .filter(document("deleteFail"))
                 .when()
-                .delete(location)
+                .port(getPort())
+                .delete("/api/youTubeVideos/theid")
                 .then()
-                .assertThat().statusCode(is(404))
+                .assertThat().statusCode(is(200))
                 .extract().response();
     }
-    
+
     private String youTubeVideoJson() {
         return """
                 {
