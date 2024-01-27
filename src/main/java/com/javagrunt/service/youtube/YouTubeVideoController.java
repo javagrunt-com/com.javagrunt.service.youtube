@@ -1,6 +1,7 @@
 package com.javagrunt.service.youtube;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +16,7 @@ public class YouTubeVideoController {
 
     @GetMapping
     public Iterable<YouTubeVideo> findAll() {
-        return youTubeVideoRepository.findAll();
+        return youTubeVideoRepository.findAll(Sort.by("dateVal").descending());
     }
 
     @GetMapping(value = "/{id}")

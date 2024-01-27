@@ -16,4 +16,5 @@ public class YouTubeVideo {
     private String title;
     private String thumbnail;
     private String date;
+    private long dateVal;
 }

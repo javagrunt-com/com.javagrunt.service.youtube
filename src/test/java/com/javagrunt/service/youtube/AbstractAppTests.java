@@ -166,7 +166,8 @@ public abstract class AbstractAppTests {
                     "description": "the description",
                     "title": "the title",
                     "thumbnail": "the thumbnail",
-                    "date": "the date"
+                    "date": "the date",
+                    "dateVal": 1234567890
                 }
                 """;
     }
