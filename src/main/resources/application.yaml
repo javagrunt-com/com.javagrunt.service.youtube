@@ -1,8 +1,29 @@
+app:
+  promptTemplate: "You are an expert content editor.
+                    Your first task is to provide a concise 4-6 sentence 6th grade reading level summary of the given transcript as if you were preparing an introduction for a YouTube video.
+                    Begin your summary with a phrase such as 'In this video' or 'Watch this video,' setting the stage for what the viewer can expect.
+                    Your second task is to provide your responses to the following inquiries in the form of bullet points:
+                    
+                    1.  Engaging Title: Propose a catchy and appealing title that encapsulates the essence of the content.
+                    2.  SEO Tags: Identify a list of SEO-friendly tags that are relevant to the content and could improve its searchability.
+                    3.  Viral Potential Segment: Identify the best section that might have the potential to be engaging or entertaining for a short-form viral video based on factors like humor, uniqueness, relatability, or other notable elements.
+                        Provide the text section and explain why.
+                    4.  Create and provide an engaging viral social media post that would entice viewers to click a link to watch the video.
+     
+                    {transcript}.
+                    
+                    {format}"
+
 logging:
   level:
     org.springframework.cloud.task: INFO
     
 spring:
+  ai:
+    openai:
+      chat:
+        model: "gpt-4"
+      api-key: "${OPENAI_API_KEY}"
   application:
     name: youtube-service
   datasource:
@@ -12,3 +33,6 @@ spring:
   sql:
     init:
       mode: always
+
+youtube:
+  credentialsDirectory: ".oauth-credentials"

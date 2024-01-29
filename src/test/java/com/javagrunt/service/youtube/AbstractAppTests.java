@@ -3,6 +3,7 @@ package com.javagrunt.service.youtube;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.testcontainers.utility.DockerImageName;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
@@ -156,6 +158,19 @@ public abstract class AbstractAppTests {
                 .then()
                 .assertThat().statusCode(is(200))
                 .extract().response();
+    }
+
+    @Test
+    public void shouldGenerateResponse() {
+        Response r = given(this.spec)
+                .filter(document("generate"))
+                .when()
+                .port(getPort())
+                .get("/api/openai/generate/yt:video:p6iE6hMU9q4")
+                .then()
+                .assertThat().statusCode(Is.is(200))
+                .extract().response();
+        logger.info(r.getBody().asPrettyString());
     }
 
     private String youTubeVideoJson() {
