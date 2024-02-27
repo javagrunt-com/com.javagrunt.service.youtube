@@ -121,4 +121,3 @@ record YouTubeVideoResponse(
         String[] seoTags,
         String socialMediaPost) {
 }
-https://oaidalleapiprodscus.blob.core.windows.net/private/org-6ldgoDgloYI4qZ1hGnzsUw7L/user-el1CsCbsZ1vRr5wt4XScsWuP/img-Tt66Gr2NnPpcPoErdsIVMFxP.png?st=2024-01-29T12%3A58%3A40Z&se=2024-01-29T14%3A58%3A40Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-01-29T11%3A32%3A27Z&ske=2024-01-30T11%3A32%3A27Z&sks=b&skv=2021-08-06&sig=W2Rn4TSq3aRgJWm9GOohKUfTNd3TuopBIJQZxUy90hw%3D
